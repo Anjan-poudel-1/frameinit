@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@coinbase/onchainkit": "^0.9.5",
+    "firebase": "^10.10.0",
     "frames.js": "^0.12.1",
     "next": "14.1.0",
     "react": "^18",

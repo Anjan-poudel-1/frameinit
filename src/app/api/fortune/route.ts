@@ -2,25 +2,41 @@ import { FrameRequest, getFrameHtmlResponse } from "@coinbase/onchainkit/frame";
 import { getFrameMessage } from "@coinbase/onchainkit";
 import { getUserDataForFid } from "frames.js";
 import { NextRequest, NextResponse } from "next/server";
+import {
+    collection,
+    addDoc,
+    getDocs,
+    query,
+    where,
+    updateDoc,
+    doc,
+} from "firebase/firestore";
+import { db } from "@/firebase/config";
 const fs = require("fs");
 const path = require("path");
 
 const quotes = require("@/app/quote");
 
-const userDataPath = path.join(__dirname, "..", "..", "userData.json");
-
 const POST_TEXT = "Anjan ho mero naam okey";
 
 interface UserDataObj {
-    [key: string]: {
-        description: string;
-        userName: string;
-        last_fetched: string;
-    };
+    description: string;
+    userName: string;
+    last_fetched: string;
+    id: string;
+    fid: string;
 }
 
+const initUserData = {
+    description: "",
+    userName: "",
+    last_fetched: "",
+    id: "",
+    fid: "",
+};
+
 async function getResponse(req: NextRequest): Promise<NextResponse> {
-    let userData: UserDataObj = {};
+    let userData: UserDataObj = initUserData;
     const body: FrameRequest = await req.json();
 
     const { untrustedData, trustedData } = body;
@@ -45,10 +61,21 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Afaile gareko
 
     let userId = untrustedData.fid.toString();
-
+    console.log("user id is ", userId);
+    const collectionRef = collection(db, "userData");
     try {
-        let dataRead = fs.readFileSync(userDataPath, "utf-8");
-        userData = JSON.parse(dataRead);
+        const q = query(collectionRef, where("fid", "==", userId));
+        await getDocs(q)
+            .then((querySnapshot) => {
+                const newData = querySnapshot.docs.map((doc) => ({
+                    ...doc.data(),
+                    id: doc.id.toString(),
+                }));
+                userData = (newData[0] as UserDataObj) || initUserData;
+            })
+            .catch((err) => {
+                console.log("errrrr", err);
+            });
     } catch (err) {
         console.log("err", err);
     }
@@ -57,18 +84,21 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     let userName = "";
 
     const date = getFormattedDate();
-    if (userData[userId]) {
-        userName = userData[userId].userName;
+    if (userData.id) {
+        userName = userData.userName;
 
-        if (userData[userId].last_fetched === date) {
-            description = userData[userId].description;
+        if (userData.last_fetched === date) {
+            description = userData.description;
         } else {
-            let { _description } = saveNewUserData(
-                userData,
-                userId,
-                date,
-                userName
-            );
+            const randomNumber = Math.ceil(Math.random() * quotes.length);
+            let _description = quotes[randomNumber];
+
+            let toUpdate = {
+                description: _description,
+                last_fetched: date,
+            };
+            console.log("to update", toUpdate);
+            await updateDoc(doc(db, "userData", userData.id), toUpdate);
             description = _description;
         }
     } else {
@@ -76,15 +106,21 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             fid: untrustedData.fid,
         });
         console.log("userDataFromFID", userDataFromFID);
-        userName = userDataFromFID?.username || "";
+        userName = userDataFromFID?.username || "anon";
 
-        let { _description } = saveNewUserData(
-            userData,
-            userId,
-            date,
-            userName
-        );
+        const randomNumber = Math.ceil(Math.random() * quotes.length);
+        let _description = quotes[randomNumber];
+
+        let dataToSave = {
+            fid: userId,
+            userName: userName,
+            description: _description,
+            last_fetched: date,
+        };
         description = _description;
+
+        await addDoc(collectionRef, dataToSave);
+        console.log("data is saved");
     }
 
     return new NextResponse(
@@ -121,15 +157,14 @@ const saveNewUserData = (
     const randomNumber = Math.ceil(Math.random() * quotes.length);
     let _description = quotes[randomNumber];
 
-    userData[userId] = {
+    let dataToSave = {
+        fid: userId,
         userName: _userName,
         description: _description,
         last_fetched: date,
     };
 
-    console.log("userData", userData);
-
-    fs.writeFileSync(userDataPath, JSON.stringify(userData), "utf-8");
+    console.log("userData", dataToSave);
 
     return { _description };
 };
