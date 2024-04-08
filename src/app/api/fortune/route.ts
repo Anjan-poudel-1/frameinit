@@ -20,7 +20,7 @@ const quotes = require("@/app/quote");
 const numberOfBase = 10;
 
 const POST_TEXT =
-    "Got my daily fortune revealed by /janani! Click to find out what's in store for you. 🔮";
+    "Got my daily fortune revealed by /janani! Click to find out what's in store for you.";
 
 interface UserDataObj {
     description: string;
