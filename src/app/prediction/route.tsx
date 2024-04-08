@@ -3,7 +3,7 @@ import { ImageResponse } from "next/og";
 // No need to install it.
 
 export const runtime = "edge";
-const numberOfBase = 4;
+const numberOfBase = 10;
 
 export async function GET(request: Request) {
     try {

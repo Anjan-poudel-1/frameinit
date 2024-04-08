@@ -17,7 +17,8 @@ const path = require("path");
 
 const quotes = require("@/app/quote");
 
-const POST_TEXT = "Anjan ho mero naam okey";
+const POST_TEXT =
+    "Got my daily fortune revealed by /janani! Click to find out what's in store for you. 🔮";
 
 interface UserDataObj {
     description: string;
