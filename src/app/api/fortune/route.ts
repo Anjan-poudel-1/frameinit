@@ -17,6 +17,8 @@ const path = require("path");
 
 const quotes = require("@/app/quote");
 
+const numberOfBase = 10;
+
 const POST_TEXT =
     "Got my daily fortune revealed by /janani! Click to find out what's in store for you. 🔮";
 
@@ -26,6 +28,7 @@ interface UserDataObj {
     last_fetched: string;
     id: string;
     fid: string;
+    base_image: string;
 }
 
 const initUserData = {
@@ -34,6 +37,7 @@ const initUserData = {
     last_fetched: "",
     id: "",
     fid: "",
+    base_image: "1",
 };
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
@@ -83,8 +87,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     let description = "";
     let userName = "";
-
+    let baseImage = "1";
     const date = getFormattedDate();
+
+    let randomImageNumber = Math.ceil(Math.random() * numberOfBase);
+    baseImage = randomImageNumber.toString();
+
     if (userData.id) {
         userName = userData.userName;
 
@@ -97,6 +105,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             let toUpdate = {
                 description: _description,
                 last_fetched: date,
+                base_image: baseImage,
             };
             console.log("to update", toUpdate);
             await updateDoc(doc(db, "userData", userData.id), toUpdate);
@@ -117,6 +126,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             userName: userName,
             description: _description,
             last_fetched: date,
+            base_image: baseImage,
         };
         description = _description;
 
@@ -128,10 +138,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         getFrameHtmlResponse({
             buttons: [
                 {
-                    label: "Re-cast",
+                    label: "Share my result",
                     action: "link",
                     target: encodeURI(
-                        `https://warpcast.com/~/compose?text=${POST_TEXT}&embeds[]=${process.env.NEXT_PUBLIC_SITE_URL}/fortune`
+                        `https://warpcast.com/~/compose?text=${POST_TEXT}&embeds[]=${process.env.NEXT_PUBLIC_SITE_URL}/myfortune/${userId}`
                     ),
                 },
                 {
@@ -149,26 +159,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     );
 }
 
-const saveNewUserData = (
-    userData: UserDataObj,
-    userId: string,
-    date: string,
-    _userName: string
-): { _description: string } => {
-    const randomNumber = Math.ceil(Math.random() * quotes.length);
-    let _description = quotes[randomNumber];
-
-    let dataToSave = {
-        fid: userId,
-        userName: _userName,
-        description: _description,
-        last_fetched: date,
-    };
-
-    console.log("userData", dataToSave);
-
-    return { _description };
-};
 const getFormattedDate = () => {
     const currentDate = new Date();
     return currentDate.toLocaleDateString("en-US", {
@@ -180,6 +170,42 @@ const getFormattedDate = () => {
 
 export async function POST(req: NextRequest): Promise<Response> {
     return getResponse(req);
+}
+
+async function getUserResponse(req: NextRequest, res: NextResponse) {
+    let userData = initUserData;
+    const { searchParams } = new URL(req.url);
+
+    const hasFID = searchParams.has("fid");
+    const fID = hasFID ? searchParams.get("fid") : "0";
+
+    console.log("fid aayo", fID);
+
+    const collectionRef = collection(db, "userData");
+    try {
+        const q = query(collectionRef, where("fid", "==", fID));
+        await getDocs(q)
+            .then((querySnapshot) => {
+                const newData = querySnapshot.docs.map((doc) => ({
+                    ...doc.data(),
+                    id: doc.id.toString(),
+                }));
+                userData = (newData[0] as UserDataObj) || initUserData;
+            })
+            .catch((err) => {
+                console.log("errrrr", err);
+            });
+
+        console.log("userdata k cha ta?", userData);
+
+        return new NextResponse(JSON.stringify(userData));
+    } catch (err) {
+        console.log("err", err);
+    }
+}
+
+export async function GET(req: NextRequest, res: NextResponse) {
+    return getUserResponse(req, res);
 }
 
 export const dynamic = "force-dynamic";

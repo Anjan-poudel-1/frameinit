@@ -22,8 +22,18 @@ export async function GET(request: Request) {
         const hasDate = searchParams.has("date");
         const date = hasDate ? searchParams.get("date") : "";
 
-        let randomNumber = Math.ceil(Math.random() * numberOfBase);
-        const baseImageURL = `${process.env.NEXT_PUBLIC_SITE_URL}/jananibase/base${randomNumber}.png`;
+        const hasBaseSelected = searchParams.has("base");
+        const selectedBase = hasBaseSelected ? searchParams.get("base") : "";
+
+        let baseImageURL = "";
+        if (selectedBase) {
+            baseImageURL = `${process.env.NEXT_PUBLIC_SITE_URL}/jananibase/base${selectedBase}.png`;
+        } else {
+            let randomNumber = Math.ceil(Math.random() * numberOfBase);
+            baseImageURL = `${process.env.NEXT_PUBLIC_SITE_URL}/jananibase/base${randomNumber}.png`;
+        }
+
+        console.log("baseImageURL", baseImageURL);
 
         return new ImageResponse(
             (
@@ -37,7 +47,7 @@ export async function GET(request: Request) {
                         width: "100%",
                         height: "100%",
                         backgroundImage: `url(${baseImageURL})`,
-                        fontSize: "18px",
+                        fontSize: "38px",
                         color: "brown",
                         fontWeight: "400",
                         fontFamily: "serif",
@@ -71,10 +81,10 @@ export async function GET(request: Request) {
                         style={{
                             position: "absolute",
                             width: "76%",
-                            top: "44.765%",
+                            top: "45.5%",
                             left: "51%",
                             transform: "translateX(-50%)",
-                            fontSize: "12px",
+                            fontSize: "24px",
                             display: "flex",
                             color: "#000",
                         }}
@@ -84,8 +94,8 @@ export async function GET(request: Request) {
                 </div>
             ),
             {
-                width: 446,
-                height: 446,
+                width: 1081,
+                height: 1081,
             }
         );
     } catch (e: any) {
