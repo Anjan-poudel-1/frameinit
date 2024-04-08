@@ -2,44 +2,39 @@
 
 ## 👀 Watch the [YouTube tutorial](https://youtu.be/g_pkATT8pYU?si=8KwGSzJ_nxWHx-k3)
 
-### 🖥️ [Live Demo](https://frames-gilt.vercel.app/basic)
-
 Paste the live demo url into https://warpcast.com/~/developers/frames to validate the frame.
 
 ## Getting Started
 
 Clone the repo and install dependencies
 
-```bash
-# Clone the repo
-git clone https://github.com/ChangoMan/frames.git
-
-# Enter the new directory
-cd frames
-
 # Install dependencies
+
 npm install
-```
-
-Next, create a `.env.local` file in the root of your project (you can copy from `.env.example`) and set the `NEXT_PUBLIC_SITE_URL` variable to your site's public URL:
-
-If your website is not deployed, you may not have a public URL just yet.
 
 ```
+
+Next, create a `.env` file in the root of your project (you can copy from `.env.example`) and set the `NEXT_PUBLIC_SITE_URL` variable to your site's public URL:
+
+If your website is not deployed, you may not have a public URL just yet. In that case, use localhost("http://localhost:3000").
+
+```
+
 NEXT_PUBLIC_SITE_URL=https://example.com
-```
+
+````
 
 Next, run the development server:
 
 ```bash
 npm run dev
-```
+````
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-For the basic frame example, go to [http://localhost:3000/basic](http://localhost:3000/basic)
+## Database
 
-For the advanced frame example, go to [http://localhost:3000/advanced](http://localhost:3000/advanced)
+The project uses firebase. Setup firebase project and create web app. Paste the configuration details in ".env" file.
 
 ## Deployment
 

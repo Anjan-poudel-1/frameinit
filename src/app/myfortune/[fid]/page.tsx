@@ -1,3 +1,5 @@
+// To share fortune of a user.
+
 import type { Metadata } from "next";
 
 type Props = {
@@ -21,9 +23,7 @@ const initUserData = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    console.log("parameter k aacha ta? ", params);
-
-    const fid = params.fid;
+    const fid = params.fid; //unique fid to a user
 
     let userData: UserDataObj = initUserData;
 

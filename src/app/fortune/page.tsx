@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+// See documentation for reference to the metadata required.
+
 export const metadata: Metadata = {
     title: "Fortune Frame",
     description: "A Farcaster Fortune Frame",

@@ -1,0 +1,33 @@
+The project is built on Next.js . For database, firebase was used 
+
+https://github.com/ChangoMan/frames - the project was cloned for reference. 
+https://www.youtube.com/watch?v=g_pkATT8pYU&list=LL&index=17 - reference youtube tutorial 
+
+
+
+1. public -> public folder typically consists of assets which can be retrieve directly via project url. 
+             These assets include images, fonts, videos, and any other files that should be served directly to the client without any processing or transformation.
+
+            jananibase -> it consists the base images that are randomised and used as background image for frame.
+                          If you wish to add more base images, follow the same naming standard. 
+                          DONOT BREAK THE NUMBER SEQUENCE WHILE ADDING/EDITING IMAGES.
+
+            "jananisiteimage.png" is used as image for static initial frame.
+
+2. quotes -> quotes are included in the folder. If you wish to add more quotes, add on "quote.txt".
+             run "npm run generateQuotes" on terminal to generate array of quotes from the text file. The file will be saved in "quotes.js" 
+
+3. src/app -> Project code sits here.
+              
+              api -> APIs that are used for the project is created here. The folder name specifies its route. 
+              
+              fortune -> "/fortune" will be the initial frame to load. 
+
+              myfortune -> The frame is used when user shares his/her fortune.
+
+              prediction -> to generated image from the prediction. If image has been changed, change the dimension of image specified in the file
+
+4. firebase -> Database is setup using firebase. The config of firebase sits here.
+
+
+** If you wish to use local testing, use "framegear" provided by  "onchainkit". "https://github.com/coinbase/onchainkit" ***

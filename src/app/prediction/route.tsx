@@ -35,6 +35,7 @@ export async function GET(request: Request) {
 
         console.log("baseImageURL", baseImageURL);
 
+        // returns the image response.... generating dynamic images
         return new ImageResponse(
             (
                 <div
@@ -94,7 +95,7 @@ export async function GET(request: Request) {
                 </div>
             ),
             {
-                width: 1081,
+                width: 1081, //specify the size of image here.
                 height: 1081,
             }
         );

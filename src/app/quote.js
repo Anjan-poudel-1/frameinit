@@ -153,5 +153,5 @@ module.exports = [
     "Volatility ahead, navigate wisely.",
     "Generosity in $DEGEN tokens to an anon returns tenfold.",
     "Sending $DEGEN to an anon is the secret to good karma.",
-    "You arrived for the $degen, but stay because we're ascending to new heights."
+    "You arrived for the $degen, but stay because we're ascending to new heights.",
 ];

@@ -1,0 +1,54 @@
+Official Documentation:
+https://docs.farcaster.xyz/learn/what-is-farcaster/frames
+https://docs.farcaster.xyz/reference/frames/spec#frame-specification
+
+
+A frame is an HTML web application that lives at a URL  on a web server.
+
+Initial Frame:
+- cached by Farcaster client, so should not include dynamic content. 
+- Should not include an fc:frame:state tag.
+
+
+A frame must have an image. It may have an input field, max 4 buttons, which when clicked load other frames or redirect the user to external websites.
+
+
+Response Frames :
+
+When interacter with a frame ,the app makes a POST request to the frame server with a frame signature which proves that the request came from the user. The server must respond with a new frame that is sent back to the user.
+
+- the post request must respond within 5 seconds. 
+- It may respond with 4XX status, content-type: application/json header, and JSON body containing a message property that is <= 90 characters to indicate an application-level error.
+- Any Location header provided must contain a URL that starts with http:// or https://
+- Return a frame with a "refresh" button if your response takes > 5 seconds.
+
+
+
+A frame must include required properties and may contain optional properties. Frames can be validated using the Frame Validator tool provided by Warpcast.
+Frame tester  : https://warpcast.com/~/developers/frames
+
+see properties to construct a frame 
+- https://docs.farcaster.xyz/reference/frames/spec#constructing-a-frame
+
+A page may contain 0 to 4 buttons
+The size of the image must be < 10 MB.
+The type of image must be jpg, png or gif. no svg
+
+
+
+
+
+other References:
+
+https://www.pinata.cloud/blog/how-to-mint-an-nft-on-base
+https://www.pinata.cloud/blog/how-to-build-a-farcaster-frame-that-mints-nfts
+https://www.pinata.cloud/blog/how-to-build-a-transaction-frame-on-farcaster
+
+
+
+Development:
+Have a look at the following documentation to start developing frame. 
+
+https://onchainkit.xyz/getting-started
+https://github.com/davidfurlong/awesome-frames
+https://framesjs.org/
